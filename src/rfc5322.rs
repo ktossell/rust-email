@@ -166,8 +166,10 @@ impl<'s> Rfc5322Parser<'s> {
             }
 
             result.push_str(self.consume_while(|c| {
-                c.is_vchar() || c == ' ' || c == '\t'
-            }).as_slice())
+                // This caused an infinite loop upon reaching an invalid character
+                // c.is_vchar() || c == ' ' || c == '\t'
+                c != '\r' && c != '\n'
+            }));
         }
         result
     }
